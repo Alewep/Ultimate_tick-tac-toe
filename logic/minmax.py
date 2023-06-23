@@ -1,18 +1,18 @@
-from game import Game
+from logic.game_numpy import Game
 import math
-import random
 
 
 def minimax(board: Game, is_maximizing: bool, max_depth: float = math.inf, depth: int = 0, alpha=-math.inf,
-            beta=+math.inf) -> float:
+            beta=+math.inf, trace=[]) -> float:
+    board.update_big_board()
     is_terminate = board.terminate()
     if depth >= max_depth or is_terminate:
-        states, score = board.evaluate()
+        score = board.evaluate()
 
         if is_terminate:
-            return score * 100
+            return score * math.inf
         else:
-            return sum(i for i in states) * 10
+            return board.heuristic()
 
     else:
         if is_maximizing:
@@ -21,14 +21,13 @@ def minimax(board: Game, is_maximizing: bool, max_depth: float = math.inf, depth
 
             validate_actions = board.validate_actions()
             for action in validate_actions:
-
-                save = board.create_save_play(action, player=1)
-                value = minimax(board, False, max_depth, depth + 1)
+                save = board.save_play(action, player=1)
+                value = minimax(board, False, max_depth, depth + 1, alpha=alpha, beta=beta, trace=trace + [action])
                 board.back(save)
                 max_value = max(value, max_value)
                 alpha = max(max_value, alpha)
 
-                if alpha >= beta:
+                if beta <= alpha:
                     break
 
             return max_value
@@ -38,9 +37,8 @@ def minimax(board: Game, is_maximizing: bool, max_depth: float = math.inf, depth
 
             validate_actions = board.validate_actions()
             for action in validate_actions:
-
-                save = board.create_save_play(action, player=-1)
-                value = minimax(board, True, max_depth, depth + 1)
+                save = board.save_play(action, player=-1)
+                value = minimax(board, True, max_depth, depth + 1, alpha=alpha, beta=beta, trace=trace + [action])
                 board.back(save)
 
                 min_value = min(value, min_value)
@@ -52,20 +50,23 @@ def minimax(board: Game, is_maximizing: bool, max_depth: float = math.inf, depth
             return min_value
 
 
-def find_best_move(board: Game, valid_actions, max_depth=2):
-    best_value = -math.inf
-    best_index = None
-    random.shuffle(valid_actions)
+def find_best_move(board: Game, max_depth=2):
+    valid_actions = board.validate_actions()
+    # random.shuffle(valid_actions)
 
+    best_value = -math.inf
+    best_index = valid_actions[0]
+
+    values = []
     for action in valid_actions:
-        save = board.create_save_play(action, player=1)
-        value = minimax(board, True, max_depth)
+        save = board.save_play(action, player=1)
+        value = minimax(board, False, max_depth, trace=[action])
         board.back(save)
-        if best_value < value:
+        if best_value <= value:
             best_index = action
             best_value = value
 
+        values.append((action, value))
+    print(values)
+
     return best_index
-
-
-
