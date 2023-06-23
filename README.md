@@ -10,8 +10,6 @@ The project is organized as follows:
 
 - **`logic/game_numpy.py`**: This file contains the `Game` class that represents the game state, game rules, and associated functionalities such as making a move, evaluating the game state, and generating valid actions.
 
-- **`logic/game_array.py`**: This file contains a previous version of the `Game` class using arrays and NumPy operations for game state management.
-
 - **`logic/minimax.py`**: This file contains the implementation of the Minimax algorithm with Alpha-Beta pruning to make decisions in the game.
 
 ## Key Features
