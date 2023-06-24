@@ -7,16 +7,39 @@ class Controller {
         this.player = -1;
         this.run()
         this.thinking = false
+        this.isWin = false;
     }
     updateWin() {
         let [win,numGrid] = this.model.lastGridWin()
         if (win !== 0) this.view.markGrid(numGrid,win)
         const winner = this.model.evaluate()
+
         if (winner !== 0){
+            this.isWin = true
             this.view.DisplayWin(winner)
         }
+        return winner
+
     }
     run() {
+        const check = document.getElementById("displayValuation")
+        const buttonReport = document.getElementById("report")
+        check.onchange = () => {
+            this.view.displayValuation(check.checked)
+        }
+        buttonReport.onclick = () => {
+                let observation = prompt("Give us your observation about this bad move :")
+                fetch('http://127.0.0.1:5000/save_history', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({history:this.model.history,"observation":observation}),
+                })
+        }
+
+
+
         for (let i = 0; i < 9; i++) {
             this.view.createBoard(i);
         }
@@ -24,7 +47,7 @@ class Controller {
         for (let i = 0; i < this.view.boardElements.length; i++) {
             let button = this.view.boardElements[i];
             button.onclick = () => {
-                if (this.thinking) return
+                if (this.thinking || this.isWin) return
                 let index_play = Number(button.id);
                 this.model.play(index_play,this.player)
                 this.view.markButton(button,this.player)
@@ -32,7 +55,10 @@ class Controller {
 
 
                 this.view.updateButtonDisabled(this.model.validActions())
-                this.updateWin()
+                let win = this.updateWin()
+                if(win) return
+
+
 
                 // get IA move
                 this.thinking = true
@@ -50,12 +76,15 @@ class Controller {
                 })
                 .then(data => {
                     let bestMove = data['best_move'];
+                    let valuations = data['valuations'];
+
                     this.model.play(bestMove,this.player)
                     console.log("play: "+bestMove)
 
                     let button = document.getElementById(bestMove)
                     this.view.markButton(button,this.player)
                     this.player *= -1
+                    view.setValuation(valuations)
 
                     this.thinking = false
                     this.view.thinking(this.thinking)

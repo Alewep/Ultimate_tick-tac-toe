@@ -9,6 +9,8 @@ export class Game {
         this.gridToUpdate = new Set();
         this.lastPlay = -1;
         this.turn = 0;
+        this.history = []
+
     }
 
     coordinateToIndex(row, col) {
@@ -41,7 +43,7 @@ export class Game {
         if (player !== 1 && player !== -1) {
             throw new Error('The player id is not correct');
         }
-
+        this.history.push(index)
         this.board[index] = player;
         this.lastPlay = index;
         this.gridToUpdate.add(Math.floor(index / this.blockSizeSquared));

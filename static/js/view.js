@@ -46,10 +46,9 @@ export class View {
     }
 
     DisplayWin(winner) {
-        winner = (winner === 1) ? 'X':'O';
         const body = document.getElementsByTagName("body")[0]
         let winMsg = document.createElement('p');
-        let msg = (winner === 1) ? "You won, but I'm still superior 😈":"I have win the game, you're suck human 🥱"
+        let msg = (winner === 1) ? "I have win the game, you're suck human 🥱":"You won, but I'm still superior 😈"
         winMsg.innerHTML = msg
         winMsg.className = "winMsg"
         body.appendChild(winMsg)
@@ -59,6 +58,34 @@ export class View {
         const msg = document.getElementById("status")
         msg.hidden = !state
     }
+
+    setValuation(valuation){
+        const buttons = document.querySelectorAll('.game button');
+        const check = document.getElementById("displayValuation")
+        buttons.forEach((button, index) => {
+            index = Number(button.id)
+            button = button.parentNode
+
+            const existingValuationElement = button.querySelector('.valuation');
+            if (existingValuationElement !== null) existingValuationElement.remove()
+            if (valuation.hasOwnProperty(index)) {
+              const valuationElement = document.createElement('span');
+              valuationElement.className = 'valuation';
+              valuationElement.hidden = !check.checked
+              valuationElement.innerHTML = valuation[index].toFixed(2);;
+              button.appendChild(valuationElement);
+            }
+        });
+    }
+
+    displayValuation(isDisplay){
+        const valuations = document.querySelectorAll('.valuation');
+        valuations.forEach((valuation) =>{
+            valuation.hidden = !isDisplay
+        });
+
+    }
+
 
 }
 

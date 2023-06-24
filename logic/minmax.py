@@ -57,7 +57,7 @@ def find_best_move(board: Game, max_depth=2):
     best_value = -math.inf
     best_index = valid_actions[0]
 
-    values = []
+    valuations = {}
     for action in valid_actions:
         save = board.save_play(action, player=1)
         value = minimax(board, False, max_depth, trace=[action])
@@ -66,7 +66,6 @@ def find_best_move(board: Game, max_depth=2):
             best_index = action
             best_value = value
 
-        values.append((action, value))
-    print(values)
+        valuations[int(action)] = value
 
-    return best_index
+    return best_index, valuations

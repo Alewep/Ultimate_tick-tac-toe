@@ -71,3 +71,32 @@ table[id^="board"] {
     font-size: 50px;
     color: white;
 }
+
+.game td {
+    position: relative;
+}
+.valuation {
+    font-size: 8.5px;
+    position: absolute;
+    background-color: black ;
+    color: white;
+    font-weight: bold;
+    bottom: 0;
+    right: 0;
+}
+
+#parameters{
+    color: white;
+    position: absolute;
+    right: 200px; /* adjust this value to add some distance from the right side of the window */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#parameters div {
+    padding: 10px;
+
+}
+
+
+
