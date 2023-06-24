@@ -1,31 +1,26 @@
-Bien sûr! Voici un exemple de README en markdown pour expliquer le projet :
-
 # Ultimate Tic-Tac-Toe
 
-Ce projet est une implémentation du jeu de Ultimate Tic-Tac-Toe en utilisant Python et la bibliothèque NumPy. Le jeu se joue sur une grille composée de 9 grilles plus petites, créant ainsi une structure de jeu en plusieurs niveaux.
+This project is an implementation of the game Ultimate Tic-Tac-Toe using Python and the NumPy library. The game is played on a grid composed of 9 smaller grids, creating a multi-level game structure.
 
-L'objectif du jeu est d'obtenir trois symboles identiques alignés horizontalement, verticalement ou en diagonale dans l'une des grilles plus petites, tout en respectant certaines règles de jeu pour déterminer dans quelle grille jouer ensuite.
+The objective of the game is to get three identical symbols aligned horizontally, vertically, or diagonally in one of the smaller grids, while following certain game rules to determine which grid to play next.
 
-## Structure du projet
+## Project Structure
 
-Le projet est organisé de la manière suivante :
+The project is organized as follows:
 
-- **`logic/game_numpy.py`**: Ce fichier contient la classe `Game` qui représente l'état du jeu, les règles du jeu et les fonctionnalités associées, telles que jouer un coup, évaluer l'état du jeu, et générer les actions valides.
+- **`logic/game_numpy.py`**: This file contains the `Game` class that represents the game state, game rules, and associated functionalities such as making a move, evaluating the game state, and generating valid actions.
 
-- **`logic/game_array.py`**: Ce fichier contient une version précédente de la classe `Game` utilisant des tableaux et des opérations NumPy pour la gestion de l'état du jeu.
+- **`logic/minimax.py`**: This file contains the implementation of the Minimax algorithm with Alpha-Beta pruning to make decisions in the game.
 
-- **`logic/minimax.py`**: Ce fichier contient l'implémentation de l'algorithme Minimax avec élagage Alpha-Beta pour prendre des décisions dans le jeu.
+## Key Features
 
-## Fonctionnalités principales
+- **Play against the computer**: You can play against the computer by choosing the cells to play in turn. The computer uses the Minimax algorithm to make its decisions.
 
-- **Jouer contre l'ordinateur**: Vous pouvez jouer contre l'ordinateur en choisissant les cases à jouer à tour de rôle. L'ordinateur utilise l'algorithme Minimax pour prendre ses décisions.
+- **Minimax Algorithm with Alpha-Beta Pruning**: The Minimax algorithm is used to make decisions in the game by evaluating different possible game states up to a certain depth. Alpha-Beta pruning reduces the search in the game tree and improves performance.
 
-- **Algorithme Minimax avec élagage Alpha-Beta**: L'algorithme Minimax est utilisé pour prendre des décisions dans le jeu, en évaluant les différents états possibles du jeu jusqu'à une certaine profondeur. L'élagage Alpha-Beta permet de réduire la recherche dans l'arbre de jeu et d'améliorer les performances.
+- **Game State Management with NumPy**: The game state is managed using the NumPy library, allowing efficient manipulation of multidimensional arrays and facilitating search and evaluation operations.
 
-- **Gestion de l'état du jeu avec NumPy**: L'état du jeu est géré à l'aide de la bibliothèque NumPy, ce qui permet une manipulation efficace des tableaux multidimensionnels et facilite les opérations de recherche et d'évaluation.
+## Author
 
-
-## Auteur
-
-Ce projet a été développé par [Alexandre MONNIER].
+This project was developed by Alexandre MONNIER.
 
