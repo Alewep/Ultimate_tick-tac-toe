@@ -9,6 +9,16 @@ class Controller {
         this.thinking = false
         this.isWin = false;
     }
+
+    refresh(history){
+        this.player = -1
+        this.model = new Game(3,3)
+        for(const index of history){
+            this.model.play(index,this.player)
+            this.player *=-1
+        }
+        this.view.refresh(history)
+    }
     updateWin() {
         let [win,numGrid] = this.model.lastGridWin()
         if (win !== 0) this.view.markGrid(numGrid,win)

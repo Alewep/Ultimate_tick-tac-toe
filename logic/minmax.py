@@ -10,7 +10,8 @@ def minimax(board: Game, is_maximizing: bool, max_depth: float = math.inf, depth
         score = board.evaluate()
 
         if is_terminate:
-            return score * math.inf
+            score = score * math.inf
+            return 0 if score == math.nan else score
         else:
             return board.heuristic()
 

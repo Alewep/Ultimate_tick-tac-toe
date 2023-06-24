@@ -32,7 +32,6 @@ class Game(object):
         self.valuation = np.zeros(self.n_block_squared)
         self.valuation_to_update = set()
         self.last_play = -1
-        self.prevent_score = [0, 0]
         self.turn = 0
 
     def coordinate_to_index(self, row, col):
@@ -97,6 +96,7 @@ class Game(object):
         self.board[index] = 0
         self.big_board[index // self.block_size_squared] = value_big_board
         self.valuation[index // self.block_size_squared] = valuation
+        self.turn -= 1
 
     def index_to_coordinate(self, index):
         grid_num = index // self.block_size_squared
@@ -115,15 +115,12 @@ class Game(object):
         return row, col
 
     def evaluate(self):
-        opp_preven, player_preven = self.prevent_score
-        if opp_preven < 3 and player_preven < 3:
-            return 0
-
+        self.update_big_board()
         for combination in winning_combinations:
             sums = self.big_board[combination].sum()
-            if sums == 1:
+            if sums == 3:
                 return 1
-            if sums == -1:
+            if sums == -3:
                 return -1
         return 0
 

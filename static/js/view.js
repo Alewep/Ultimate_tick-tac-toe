@@ -85,6 +85,15 @@ export class View {
         });
 
     }
+    refresh(history){
+        let symbol = -1
+        for( const index of history){
+            const button = document.getElementById(index)
+
+            this.markButton(button,symbol)
+            symbol *=-1
+        }
+    }
 
 
 }
