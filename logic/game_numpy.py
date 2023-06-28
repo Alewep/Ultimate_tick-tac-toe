@@ -145,7 +145,13 @@ class Game(object):
         return valid_actions
 
     def heuristic(self):
+
         # TODO: Implement a system to save heuristic values per game turn and depth.
+
+        # TODO: The heuristic isn't entirely accurate yet. We need to:
+        #Adjust the heuristic for grids with a draw game (by setting an arbitrary value stating that this cell cannot be won by either the player or the opponent)
+        #Adjust the heuristic of the large grid because negative values are not ignored as they differ from -1
+        #Using a function like RELU could optimize the performance of the heuristic by eliminating negative values and calculating quickly for both the opponent and the attacker
 
         self.update_big_board()
         for grid_num in self.valuation_to_update:
