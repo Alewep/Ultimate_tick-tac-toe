@@ -16,9 +16,12 @@ The project is organized as follows:
 
 - **Play against the computer**: You can play against the computer by choosing the cells to play in turn. The computer uses the Minimax algorithm to make its decisions.
 
+- **Game State Management with NumPy**: The game state is managed using the NumPy library, allowing efficient manipulation of multidimensional arrays and facilitating search and evaluation operations.
+
+- **Heuristic analysis** : Research and development on heuristic functions to evaluate the game board.
+
 - **Minimax Algorithm with Alpha-Beta Pruning**: The Minimax algorithm is used to make decisions in the game by evaluating different possible game states up to a certain depth. Alpha-Beta pruning reduces the search in the game tree and improves performance.
 
-- **Game State Management with NumPy**: The game state is managed using the NumPy library, allowing efficient manipulation of multidimensional arrays and facilitating search and evaluation operations.
 
 ## Author
 
