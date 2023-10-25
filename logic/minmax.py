@@ -1,19 +1,19 @@
-from logic.game_numpy import Game
+from logic.game_numpy import Game, evaluate, FREE
 import math
+from logic.heuristic import heuristic
+import numpy as np
 
 
-def minimax(board: Game, is_maximizing: bool, max_depth: float = math.inf, depth: int = 0, alpha=-math.inf,
+def minimax(board: Game, is_maximizing: bool, max_depth: int = 0, depth: int = 0, alpha=-math.inf,
             beta=+math.inf, trace=[]) -> float:
     board.update_big_board()
-    is_terminate = board.terminate()
-    if depth >= max_depth or is_terminate:
-        score = board.evaluate()
-
-        if is_terminate:
-            score = score * math.inf
-            return 0 if score == math.nan else score
+    status = board.status()
+    if depth >= max_depth or status != FREE:
+        print(depth)
+        if status != FREE:
+            return evaluate(status)
         else:
-            return board.heuristic()
+            return heuristic(board)
 
     else:
         if is_maximizing:
@@ -51,7 +51,7 @@ def minimax(board: Game, is_maximizing: bool, max_depth: float = math.inf, depth
             return min_value
 
 
-def find_best_move(board: Game, max_depth=2):
+def find_best_move(board: Game, max_depth=0):
     valid_actions = board.validate_actions()
     # random.shuffle(valid_actions)
 

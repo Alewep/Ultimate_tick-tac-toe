@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 
 winning_combinations = [
@@ -5,19 +7,17 @@ winning_combinations = [
     [0, 3, 6], [1, 4, 7], [2, 5, 8],
     [0, 4, 8], [2, 4, 6]
 ]
-MAX_HEURISTIQUE = 24
+LOSE = -1
+WIN = 1
+EQUALITY = np.nan
+FREE = 0
 
-
-def local_heuristic(board):
-    values = np.take(board, winning_combinations)
-    no_negative_ones = np.all(values != -1, axis=1)
-    total_score_player = np.sum(values[no_negative_ones], axis=1).sum()
-
-    values = np.take(board * -1, winning_combinations)
-    no_negative_ones = np.all(values != -1, axis=1)
-    total_score_opponent = np.sum(values[no_negative_ones], axis=1).sum()
-
-    return total_score_player - 1.1*total_score_opponent
+status_evaluation = {
+    LOSE: -1,
+    WIN: 1,
+    EQUALITY: 0,
+    FREE: 0
+}
 
 
 class Game(object):
@@ -48,7 +48,7 @@ class Game(object):
 
         for grid_num in self.grid_to_update:
             # If this grid is already marked as won by any player, no need to update
-            if self.big_board[grid_num] != 0:
+            if self.big_board[grid_num] != FREE:
                 continue
 
             start = grid_num * self.block_size_squared
@@ -56,21 +56,21 @@ class Game(object):
             subgrid = self.board[start:end]
 
             for combination in winning_combinations:
-                sums = subgrid[combination].sum()
-                if sums == 3:
-                    self.big_board[grid_num] = 1
+                sums = self.big_board[combination].sum() / 3
+                if sums == WIN or sums == LOSE:
+                    self.big_board[grid_num] = sums
                     break
-                if sums == -3:
-                    self.big_board[grid_num] = -1
-                    break
+
+            if self.big_board[grid_num] != FREE and np.count_nonzero(subgrid) == self.block_size_squared:
+                self.big_board[grid_num] = EQUALITY
 
     def play(self, i, j=None, player=1):
         if j is None:
             index = i
         else:
             index = self.coordinate_to_index(i, j)
-        if self.board[index] == 0:
-            if player == 1 or player == -1:
+        if self.board[index] == FREE:
+            if player == WIN or player == LOSE:
                 self.board[index] = player
             else:
                 raise ValueError("The player id is not correct")
@@ -93,7 +93,7 @@ class Game(object):
 
     def back(self, save):
         self.last_play, valuation, value_big_board, index, self.grid_to_update, self.valuation_to_update = save
-        self.board[index] = 0
+        self.board[index] = FREE
         self.big_board[index // self.block_size_squared] = value_big_board
         self.valuation[index // self.block_size_squared] = valuation
         self.turn -= 1
@@ -114,54 +114,35 @@ class Game(object):
 
         return row, col
 
-    def evaluate(self):
+    def status(self):
         self.update_big_board()
         for combination in winning_combinations:
-            sums = self.big_board[combination].sum()
-            if sums == 3:
-                return 1
-            if sums == -3:
-                return -1
-        return 0
+            sums = self.big_board[combination].sum() / 3
+            if sums == WIN or sums == LOSE:
+                return sums
 
-    def terminate(self):
-        return self.evaluate() != 0 or self.turn == (self.block_size_squared * self.n_block_squared)
+        if np.count_nonzero(self.big_board) == self.block_size_squared:
+            return EQUALITY
+
+        return 0
 
     def validate_actions(self):
         grid_num = self.last_play % self.block_size_squared
         self.update_big_board()
 
-        if self.last_play >= 0 and self.big_board[grid_num] == 0:
+        if self.last_play >= 0 and self.big_board[grid_num] == FREE:
             start = grid_num * self.block_size_squared
             end = (grid_num + 1) * self.block_size_squared
             subgrid = self.board[start:end]
 
-            return np.where(subgrid == 0)[0] + (grid_num * self.block_size_squared)
+            return np.where(subgrid == FREE)[0] + (grid_num * self.block_size_squared)
 
         else:
-            all_valid = np.where(self.board == 0)[0]
-            valid_actions = all_valid[self.big_board[all_valid // self.block_size_squared] == 0]
+            all_valid = np.where(self.board == FREE)[0]
+            valid_actions = all_valid[self.big_board[all_valid // self.block_size_squared] == FREE]
 
         return valid_actions
 
-    def heuristic(self):
 
-        # TODO: Implement a system to save heuristic values per game turn and depth.
-
-        # TODO: The heuristic isn't entirely accurate yet. We need to:
-        #Adjust the heuristic for grids with a draw game (by setting an arbitrary value stating that this cell cannot be won by either the player or the opponent)
-        #Adjust the heuristic of the large grid because negative values are not ignored as they differ from -1
-        #Using a function like RELU could optimize the performance of the heuristic by eliminating negative values and calculating quickly for both the opponent and the attacker
-
-        self.update_big_board()
-        for grid_num in self.valuation_to_update:
-            if self.big_board[grid_num] != 0:
-                self.valuation[grid_num] = MAX_HEURISTIQUE * self.big_board[grid_num]
-            else:
-                start = grid_num * self.block_size_squared
-                end = start + self.block_size_squared
-                subgrid = self.board[start:end]
-                self.valuation[grid_num] = local_heuristic(subgrid)
-
-        self.valuation_to_update.clear()
-        return local_heuristic(self.valuation)
+def evaluate(status):
+    return status_evaluation[status]

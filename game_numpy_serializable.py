@@ -19,7 +19,6 @@ class GameSerializable(Game):
             'valuation': list(map(int, self.valuation.tolist())),  # Convert all elements to int
             'valuation_to_update': list(map(int, self.valuation_to_update)),  # Convert all elements to int
             'last_play': int(self.last_play),  # Convert numpy.int64 to int
-            'prevent_score': list(map(int, self.prevent_score)),  # Convert all elements to int
             'turn': int(self.turn),  # Convert numpy.int64 to int
         }
 
@@ -34,6 +33,5 @@ class GameSerializable(Game):
         game.valuation = np.array(data['valuation'])  # Convert list back to numpy array with int type
         game.valuation_to_update = set(data['valuation_to_update'])
         game.last_play = data['last_play']  # Already in int format
-        game.prevent_score = data['prevent_score']  # Already in int format
         game.turn = data['turn']  # Already in int format
         return game
